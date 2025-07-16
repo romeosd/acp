@@ -1,0 +1,43 @@
+# IBM ACP Agent Configuration
+
+# Watsonx.ai Configuration
+watsonx:
+  api_key: "your_watsonx_api_key_here"
+  project_id: "your_project_id_here"
+  endpoint: "https://us-south.ml.cloud.ibm.com"
+  model: "ibm-granite/granite-13b-chat-v2"
+  max_tokens: 2048
+  temperature: 0.7
+
+# ACP (Agent Communication Protocol) Configuration
+acp:
+  host: "localhost"
+  port: 8080
+  protocol: "http"
+  timeout: 30
+  max_file_size: 10485760  # 10MB
+
+# MCP (Model Context Protocol) Configuration
+mcp:
+  host: "localhost"
+  port: 8081
+  timeout: 30
+
+# PDF Processing Configuration
+pdf:
+  max_pages: 100
+  supported_formats: ["pdf"]
+  temp_directory: "./temp"
+  chunk_size: 1000
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "json"
+  file: "logs/acp_agent.log"
+
+# Security Configuration
+security:
+  enable_auth: false
+  api_key_header: "X-API-Key"
+  allowed_origins: ["*"] 

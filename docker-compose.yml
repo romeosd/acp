@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  acp-agent:
+    build: .
+    container_name: ibm-acp-agent
+    ports:
+      - "8080:8080"  # ACP Server
+      - "8081:8081"  # MCP Server
+    environment:
+      - WATSONX_API_KEY=${WATSONX_API_KEY}
+      - WATSONX_PROJECT_ID=${WATSONX_PROJECT_ID}
+      - WATSONX_ENDPOINT=${WATSONX_ENDPOINT:-https://us-south.ml.cloud.ibm.com}
+      - ACP_HOST=0.0.0.0
+      - ACP_PORT=8080
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8081
+    volumes:
+      - ./config:/app/config:ro
+      - ./logs:/app/logs
+      - ./temp:/app/temp
+      - ./examples:/app/examples
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8080/acp/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: acp-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+
+  # Optional: Nginx for load balancing (uncomment if needed)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: acp-nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - acp-agent
+  #   restart: unless-stopped
+
+volumes:
+  redis_data: 
